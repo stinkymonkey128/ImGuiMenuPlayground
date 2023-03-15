@@ -1,6 +1,45 @@
 #include "renderer.hpp"
 #include "GuiH.h"
 
+void drawTexts(ImDrawList* drawList, const char* texts[], int numTexts, ImVec2 position, ImU32 color) {
+    ImVec2 textSize[20];
+    float totalWidth = 0;
+
+    // Measure the size of each text and calculate the total width
+    for (int i = 0; i < numTexts; i++) {
+        textSize[i] = ImGui::CalcTextSize(texts[i]);
+        totalWidth += textSize[i].x;
+    }
+
+    // Calculate the horizontal spacing between texts
+    float spacing = 100;
+
+    // Draw each text with the calculated spacing
+    for (int i = 0; i < numTexts; i++) {
+        GUIH::drawMessage(BImg::Lexend16, 16, texts[i], position.x, position.y, color);
+        position.x += textSize[i].x + spacing;
+    }
+}
+
+ImVec2* drawHText(int minX, int maxX, int y, const char* texts[], int num, ImFont font, int selec, ImU32 off, ImU32 on) {
+    ImVec2 textSize[15]; 
+    ImVec2 textBounds[30]; // left top , right bottom bounds
+    ImVec2 pos;
+
+    float totalWidth = 0;
+
+    for (int i = 0; i < num; i++) {
+        textSize[i] = ImGui::CalcTextSize(texts[i]);
+        totalWidth += textSize[i].x;
+    }
+
+    pos.x = minX + textSize[0].x / 2;
+    pos.y = y;
+
+    //float sepa = 
+    return NULL;
+}
+
 int main( )
 {
 
@@ -33,30 +72,16 @@ int main( )
             GUIH::pos = ImGui::GetCursorScreenPos();
             GUIH::gDraw = drawlist;
 
-            
-            //drawlist->AddRectFilled(ImVec2(pos.x + 0 - 8, pos.y - 4), ImVec2(pos.x + 800 - 8, pos.y), IM_COL32(255, 255, 255, 255));
-            
-            //29
-            /*
-            GUIH::drawMessage(BImg::ShortBaby, "BANANA  TRADING  INTERFACE", 265, 3);
-            GUIH::drawRect(0, 24, 800, 1, 0, IM_COL32(225, 179, 1, 255)); // Line
-            GUIH::drawRect(0, 0, 800, 23, 0, IM_COL32(0, 0, 0, 220)); // Title Bar
-            GUIH::drawGraident(0, 25, 800, 8, IM_COL32(0, 0, 0, 0), IM_COL32(0, 0, 0, 0), IM_COL32(225, 179, 1, 255), IM_COL32(225, 179, 1, 255));
-            GUIH::drawImage(BImg::backgroundtex, 0, 0, 800, 579);
-
-            if (ImGui::Button("HI", ImVec2(20, 20))) {
-
-            }
-            */
-
-            //GUIH::drawImage(BImg::backgroundtex, 84, 4, 225, 592);
-
             ImU32 palette[5] = { IM_COL32(15, 6, 6, 255), IM_COL32(32, 11, 11, 255), IM_COL32(47, 0, 0, 255), IM_COL32(73, 0, 0, 255), IM_COL32(101, 0, 0, 255) };
             
-            if (GUIH::inBound(0, 0, 50, 50)) {
-                GUIH::drawRect(0, 0, 50, 50, 0, palette[1]);
-                
-            }
+            
+
+            
+            //drawTexts(drawlist, texts, 5, ImVec2{ 124, 30 }, IM_COL32(255, 255, 255, 255));
+            GUIH::drawMessage(BImg::Lexend16, 16, "TEST", 0, 0);
+            GUIH::drawMessage(BImg::ShortBaby, 20, "Monkey CEO", 30, 80);
+
+            GUIH::drawImage(BImg::angrymonkeytex, 30, 10, 64, 64);
 
             GUIH::drawRect(0, 4, 800, 596, 6, palette[1]);
             GUIH::drawGradient(6, 0, 788, 8, IM_COL32(236, 65, 45, 255), IM_COL32(103, 58, 183, 255), IM_COL32(236, 65, 45, 255), IM_COL32(103, 58, 183, 255));

@@ -30,6 +30,7 @@ private:
     D3DPRESENT_PARAMETERS m_present;
 
 public:
+    HWND outWindow;
 
     bool create_device_d3d( HWND& m_window ) {
         if ( ( m_direct = Direct3DCreate9( D3D_SDK_VERSION ) ) == NULL ) return false;
@@ -46,8 +47,10 @@ public:
         if (m_direct->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, m_window, D3DCREATE_HARDWARE_VERTEXPROCESSING, &m_present, &m_device) < 0)
             return false;
 
+        // REGISTERIMAGES ****
         D3DXCreateTextureFromFileInMemory(m_device, BImg::background, sizeof(BImg::background), &BImg::backgroundtex);
-       
+        D3DXCreateTextureFromFileInMemory(m_device, BImg::angrymonkey, sizeof(BImg::angrymonkey), &BImg::angrymonkeytex);
+        // END REGISTERIMAGES
 
         return true;
     }
@@ -121,9 +124,9 @@ public:
 
         RegisterClassExA( &wc );
 
-        HWND hwnd = CreateWindowExA(0, wc.lpszClassName , ( "Debug IMGUI" ) , WS_OVERLAPPEDWINDOW , 100 , 100 , 1280 , 800 , NULL , NULL , wc.hInstance , NULL );
+        outWindow = CreateWindowExA(0, wc.lpszClassName , ( "Debug IMGUI" ) , WS_OVERLAPPEDWINDOW , 100 , 100 , 1280 , 800 , NULL , NULL , wc.hInstance , NULL );
 
-        if ( !create_device_d3d( hwnd ) )
+        if ( !create_device_d3d(outWindow) )
         {
             cleanup_device_d3d( );
             UnregisterClassA( wc.lpszClassName , wc.hInstance );
@@ -140,18 +143,17 @@ public:
             ShowWindow( GetConsoleWindow( ) , SW_HIDE );
         }
 
-        ShowWindow( hwnd , SW_SHOWDEFAULT );
-        UpdateWindow( hwnd );
+        ShowWindow(outWindow, SW_SHOWDEFAULT );
+        UpdateWindow(outWindow);
 
         ImGui::CreateContext( );
-
-        ImGuiIO& io = ImGui::GetIO();
-        (void)io;
-        BImg::ShortBaby = io.Fonts->AddFontFromMemoryCompressedTTF(BImg::ShortBaby_compressed_data, BImg::ShortBaby_compressed_size, 16);
+       
+        BImg::Lexend16 = ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(BImg::Lexend_compressed_data, BImg::Lexend_compressed_size, 16);
+        BImg::ShortBaby = ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(BImg::ShortBaby_compressed_data, BImg::ShortBaby_compressed_size, 20);
 
         ImGui::StyleColorsDark( );
 
-        ImGui_ImplWin32_Init( hwnd );
+        ImGui_ImplWin32_Init(outWindow);
         ImGui_ImplDX9_Init( m_device );
 
         ImVec4 clear_color = ImVec4( 0.45f , 0.55f , 0.60f , 1.00f );
@@ -208,7 +210,7 @@ public:
 
         cleanup_device_d3d( );
 
-        DestroyWindow( hwnd );
+        DestroyWindow(outWindow);
         UnregisterClassA( wc.lpszClassName , wc.hInstance );
     }
 

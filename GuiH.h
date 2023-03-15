@@ -22,6 +22,7 @@ namespace GUIH {
         int w;
         int h;
         int r;
+        float fontSize;
         ImU32 col;
         const char* label;
         ImFont* font;
@@ -54,8 +55,9 @@ namespace GUIH {
         //gDraw->AddRectFilled(ImVec2(x, y), ImVec2(x + w, y + h), color, r, flags);
     }
 
-    void drawMessage(ImFont* font, const char* text, int x, int y, ImU32 color = IM_COL32_WHITE) {
+    void drawMessage(ImFont* font, float fontSize, const char* text, int x, int y, ImU32 color = IM_COL32_WHITE) {
         Object o;
+        o.fontSize = fontSize;
         o.x = x + pos.x - 8;
         o.y = y + pos.y - (NOTITLEBAR ? 8 : 0);
         o.font = font;
@@ -110,7 +112,7 @@ namespace GUIH {
                 break;
             }
             case ObjectType::TEXT: {
-                gDraw->AddText(ImVec2(obj.x, obj.y), obj.col, obj.label);
+                gDraw->AddText(obj.font, obj.fontSize, ImVec2(obj.x, obj.y), obj.col, obj.label);
                 break;
             }
 
@@ -119,20 +121,27 @@ namespace GUIH {
         ObjectList.clear();
     }
 
-    int calcTextWidth(const char* str) {
-        return sizeof(str) / sizeof(char) * 16;
+    ImVec2 getTextWidth(const char* text, int fontSize) {
+        return ImGui::GetFont()->CalcTextSizeA(ImGui::GetFontSize(), FLT_MAX, -1.0f, text);
     }
 
-    bool inBound(int x, int y, int w, int h) {
-        ImVec2 cPos;
-        cPos.x = -8;
-        cPos.y = -8;
-        LPPOINT cp = LPPOINT();
-        GetCursorPos(cp);
+    bool inBound(HWND hwnd, int x, int y, int w, int h) {
+        ImVec2 menuPos = ImGui::GetWindowPos();
+        
+        // Get the cursor position in client coordinates
+        POINT cp;
+        GetCursorPos(&cp);
+        ScreenToClient(hwnd, &cp);
+        cp.x -= menuPos.x;
+        cp.y -= menuPos.y;
 
-        std::string str = (std::to_string(cp->x) + " " + std::to_string(cp->y) + "\n");
+        // Output the cursor position to the debug console for testing purposes
+        /*
+        std::string str = (std::to_string(cp.x - menuPos.x) + " " + std::to_string(cp.y - menuPos.y) + "\n");
         std::wstring temp = std::wstring(str.begin(), str.end());
         OutputDebugStringW(temp.c_str());
-        return (cp->x + cPos.x > x && cPos.y < x + w && cPos.y > y && cPos.y < y + h) ? true : false;
+        */
+        
+        return (cp.x > x && cp.x < x + w && cp.y > y && cp.y < y + h);
     }
 }
