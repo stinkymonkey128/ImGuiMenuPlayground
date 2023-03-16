@@ -2,6 +2,8 @@
 
 #include "imgui/imgui.h"
 
+#include "colorscheme.h";
+
 #include <vector>
 #include <d3d9.h>
 
@@ -139,5 +141,114 @@ namespace GUIH {
 
     bool inBound(HWND hwnd, int x, int y, int w, int h) {
         return inBound(hwnd, ImVec2(x, y), ImVec2(x + w, y + h));
+    }
+
+    int drawMNav(int minX, int maxX, int y, const char* texts[], int num, ImFont* font, int fontSize, int& selec, ImU32 off, ImU32 on, ImU32 highlight) {
+        ImVec2 textSize[15];
+        ImVec2 pos;
+
+        float totalWidth = 0;
+
+        for (int i = 0; i < num; i++) {
+            textSize[i] = ImGui::CalcTextSize(texts[i]);
+            totalWidth += textSize[i].x;
+        }
+
+        float sepa = (maxX - minX) / (num + 1);
+
+        pos.x = minX;
+        pos.y = y;
+
+        for (int i = 0; i < num; i++) {
+            int lBound;
+            int rBound;
+            ImU32 dCol;
+
+            dCol = off;
+            if (i == selec)
+                dCol = on;
+
+            pos.x += sepa - textSize[i].x / 2;
+            lBound = pos.x;
+            pos.x += textSize[i].x;// * 3 / 2;
+            rBound = pos.x + textSize[i].x / 2;
+
+            if (GUIH::inBound(m_renderer->outWindow, ImVec2(lBound, pos.y), ImVec2(rBound, pos.y + textSize[i].y))) {
+                if (GetAsyncKeyState(VK_LBUTTON))
+                    selec = i;
+                else
+                    dCol = highlight;
+            }
+
+            GUIH::drawMessage(font, fontSize, texts[i], lBound, pos.y, dCol);
+        }
+
+        return selec;
+    }
+
+
+    ImVec2* drawHText(int minX, int maxX, int y, const char* texts[], int num, ImFont* font, int fontSize, int selec, ImU32 off, ImU32 on) {
+        ImVec2 textSize[15];
+        ImVec2 textBounds[30]; // left top , right bottom bounds
+        ImVec2 pos;
+
+        float totalWidth = 0;
+
+        for (int i = 0; i < num; i++) {
+            textSize[i] = ImGui::CalcTextSize(texts[i]);
+            totalWidth += textSize[i].x;
+        }
+
+        float sepa = (maxX - minX) / (num + 1);
+
+        pos.x = minX;
+        pos.y = y;
+
+        for (int i = 0; i < num; i++) {
+            int lBound;
+            int rBound;
+            ImU32 dCol;
+
+            pos.x += sepa - textSize[i].x / 2;
+            lBound = pos.x;
+
+            dCol = off;
+            if (i == selec)
+                dCol = on;
+
+            GUIH::drawMessage(font, fontSize, texts[i], pos.x, pos.y, dCol);
+            pos.x += textSize[i].x * 3 / 2;
+            rBound = pos.x;
+
+            textBounds[2 * i] = ImVec2(lBound, pos.y);
+            textBounds[2 * i + 1] = ImVec2(rBound, pos.y + textSize[i].y);
+        }
+
+        return textBounds;
+    }
+
+    void drawVNavBar(HWND hwnd, int x, int minY, int maxY, LPDIRECT3DTEXTURE9 icons[], int num, ImVec2 iconSize, ImVec2 highlightSize, int& selec) {
+        ImVec2 pos = ImVec2(x, minY);
+        float sepa = (maxY - minY - iconSize.y * num) / (num - 1);
+
+        for (int i = 0; i < num; i++) {
+            ImU32 col = CScheme::MAIN_NAVBAR_OFF;
+            if (selec == i)
+                col = CScheme::MAIN_NAVBAR_ON;
+
+            if (inBound(hwnd, pos, iconSize)) 
+                if (GetAsyncKeyState(VK_LBUTTON))
+                    selec = i;
+                else
+                    col = CScheme::MAIN_NAVBAR_ON;
+            
+            int hDispX = (highlightSize.x - iconSize.x) / 2;
+            int hDispY = (highlightSize.y - iconSize.y) / 2;
+            
+            drawRect(pos.x - hDispX, pos.y - hDispY, highlightSize.x, highlightSize.y, 8, col);
+            drawImage(icons[i], pos.x, pos.y, iconSize.x, iconSize.y);
+
+            pos.y += iconSize.y + sepa;
+        }
     }
 }

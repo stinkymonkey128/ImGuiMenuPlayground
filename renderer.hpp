@@ -49,6 +49,7 @@ public:
 
         // REGISTERIMAGES ****
         D3DXCreateTextureFromFileInMemory(m_device, BImg::angrymonkey, sizeof(BImg::angrymonkey), &BImg::angrymonkeytex);
+        D3DXCreateTextureFromFileInMemory(m_device, BImg::targetIconTex, sizeof(BImg::targetIconTex), &BImg::targetIcon);
         // END REGISTERIMAGES
 
         return true;

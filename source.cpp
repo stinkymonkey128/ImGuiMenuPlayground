@@ -3,7 +3,7 @@
 
 // TESTING GLOBALS
 
-int selection = 1;
+int mSelection = 0;
 
 void drawTexts(ImDrawList* drawList, const char* texts[], int numTexts, ImVec2 position, ImU32 color) {
     ImVec2 textSize[20];
@@ -23,46 +23,6 @@ void drawTexts(ImDrawList* drawList, const char* texts[], int numTexts, ImVec2 p
         GUIH::drawMessage(BImg::Lexend16, 16, texts[i], position.x, position.y, color);
         position.x += textSize[i].x + spacing;
     }
-}
-
-ImVec2* drawHText(int minX, int maxX, int y, const char* texts[], int num, ImFont* font, int fontSize, int selec, ImU32 off, ImU32 on) {
-    ImVec2 textSize[15]; 
-    ImVec2 textBounds[30]; // left top , right bottom bounds
-    ImVec2 pos;
-
-    float totalWidth = 0;
-
-    for (int i = 0; i < num; i++) {
-        textSize[i] = ImGui::CalcTextSize(texts[i]);
-        totalWidth += textSize[i].x;
-    }
-
-    float sepa = (maxX - minX) / (num + 1);
-
-    pos.x = minX;
-    pos.y = y;
-
-    for (int i = 0; i < num; i++) {
-        int lBound;
-        int rBound;
-        ImU32 dCol;
-
-        pos.x += sepa - textSize[i].x / 2;
-        lBound = pos.x;
-        
-        dCol = off;
-        if (i == selec)
-            dCol = on;
-
-        GUIH::drawMessage(font, fontSize, texts[i], pos.x, pos.y, dCol);
-        pos.x += textSize[i].x / 2;
-        rBound = pos.x;
-
-        textBounds[2 * i] = ImVec2(lBound, pos.y);
-        textBounds[2 * i + 1] = ImVec2(rBound, pos.y + textSize[i].y);
-    }
-    
-    return textBounds;
 }
 
 int main( )
@@ -96,34 +56,18 @@ int main( )
         if ( ImGui::Begin(" ", &m_renderer->is_open(), ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoScrollbar)) {
             GUIH::pos = ImGui::GetCursorScreenPos();
             GUIH::gDraw = drawlist;
+            // ^^ NO TOUCHY
 
-            ImU32 palette[5] = { IM_COL32(15, 6, 6, 255), IM_COL32(32, 11, 11, 255), IM_COL32(47, 0, 0, 255), IM_COL32(73, 0, 0, 255), IM_COL32(101, 0, 0, 255) };
+            LPDIRECT3DTEXTURE9 icons[] = { BImg::targetIcon, BImg::targetIcon, BImg::targetIcon, BImg::targetIcon, BImg::targetIcon };
             
-            //drawTexts(drawlist, texts, 5, ImVec2{ 124, 30 }, IM_COL32(255, 255, 255, 255));
-            const char* textL[5] = { "Hey", "Hi", "Hello", "Hey", "Hi"};
-            ImVec2 *boundText = drawHText(124, 760, 40, textL, 5, BImg::Lexend16, 24, selection, IM_COL32(255, 255, 255, 255), IM_COL32(250, 218, 94, 255));
-            
-            if (GUIH::inBound(m_renderer->outWindow, boundText[0], boundText[1])) {
-                selection = 0;
-            }
-            if (GUIH::inBound(m_renderer->outWindow, boundText[2], boundText[3])) {
-                selection = 1;
-            }
-            if (GUIH::inBound(m_renderer->outWindow, boundText[4], boundText[5])) {
-                selection = 2;
-            }
-            if (GUIH::inBound(m_renderer->outWindow, boundText[6], boundText[7])) {
-                selection = 3;
-            }
-            if (GUIH::inBound(m_renderer->outWindow, boundText[8], boundText[9])) {
-                selection = 4;
-            }
+            GUIH::drawVNavBar(m_renderer->outWindow, 4, 40, 540, icons, 5, ImVec2(32, 32), ImVec2(38, 38), mSelection);
 
-            GUIH::drawMessage(BImg::ShortBaby, 20, "Filler Point", 30, 80);
+            GUIH::drawRect(10, 4, 74, 596, 0, CScheme::MAIN_NAVBAR_BG);
+            GUIH::drawRect(0, 4, 84, 596, 6, CScheme::MAIN_NAVBAR_BG);
 
-            GUIH::drawImage(BImg::angrymonkeytex, 30, 10, 64, 64);
+            //GUIH::drawImage(BImg::angrymonkeytex, 30, 10, 64, 64);
 
-            GUIH::drawRect(0, 4, 800, 596, 6, palette[1]);
+            GUIH::drawRect(0, 4, 800, 596, 6, CScheme::MAIN_BG);
             GUIH::drawGradient(6, 0, 788, 8, IM_COL32(236, 65, 45, 255), IM_COL32(103, 58, 183, 255), IM_COL32(236, 65, 45, 255), IM_COL32(103, 58, 183, 255));
             GUIH::drawRect(0, 0, 12, 20, 6, IM_COL32(236, 65, 45, 255));
             GUIH::drawRect(788, 0, 12, 20, 6, IM_COL32(103, 58, 183, 255));
@@ -137,6 +81,26 @@ int main( )
         }
 
     };
+
+    /*
+    * ImU32 palette[5] = { IM_COL32(15, 6, 6, 255), IM_COL32(32, 11, 11, 255), IM_COL32(47, 0, 0, 255), IM_COL32(73, 0, 0, 255), IM_COL32(101, 0, 0, 255) };
+            
+            //drawTexts(drawlist, texts, 5, ImVec2{ 124, 30 }, IM_COL32(255, 255, 255, 255));
+            const char* textL[5] = { "Aim", "Visual", "Skins", "Misc", "Saves"};
+            //drawHText(124, 760, 80, textL, 5, BImg::Lexend16, 24, mSelection, IM_COL32(255, 255, 255, 255), IM_COL32(250, 218, 94, 255));
+            switch (drawMNav(124, 760, 40, textL, 5, BImg::Lexend16, 24, mSelection, IM_COL32(255, 255, 255, 255), IM_COL32(250, 218, 94, 255), IM_COL32(66, 70, 77, 125))) {
+            case 0:
+                break;
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            }
+    */
 
     m_renderer->on_message = [ ] ( WPARAM key )
     {
