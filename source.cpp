@@ -21,7 +21,7 @@ void drawTexts(ImDrawList* drawList, const char* texts[], int numTexts, ImVec2 p
     }
 }
 
-ImVec2* drawHText(int minX, int maxX, int y, const char* texts[], int num, ImFont font, int selec, ImU32 off, ImU32 on) {
+ImVec2* drawHText(int minX, int maxX, int y, const char* texts[], int num, ImFont* font, int fontSize, int selec, ImU32 off, ImU32 on) {
     ImVec2 textSize[15]; 
     ImVec2 textBounds[30]; // left top , right bottom bounds
     ImVec2 pos;
@@ -33,11 +33,32 @@ ImVec2* drawHText(int minX, int maxX, int y, const char* texts[], int num, ImFon
         totalWidth += textSize[i].x;
     }
 
-    pos.x = minX + textSize[0].x / 2;
+    float sepa = (maxX - minX) / (num + 1);
+
+    pos.x = minX;
     pos.y = y;
 
-    //float sepa = 
-    return NULL;
+    for (int i = 0; i < num; i++) {
+        int lBound;
+        int rBound;
+        ImU32 dCol;
+
+        pos.x += sepa - textSize[i].x / 2;
+        lBound = pos.x;
+        
+        dCol = off;
+        if (i == selec)
+            dCol = on;
+
+        GUIH::drawMessage(font, fontSize, texts[i], pos.x, pos.y, dCol);
+        pos.x += textSize[i].x / 2;
+        rBound = pos.x;
+
+        textBounds[2 * i] = ImVec2(lBound, pos.y);
+        textBounds[2 * i + 1] = ImVec2(rBound, pos.y + textSize[i].y);
+    }
+    
+    return textBounds;
 }
 
 int main( )
@@ -78,8 +99,9 @@ int main( )
 
             
             //drawTexts(drawlist, texts, 5, ImVec2{ 124, 30 }, IM_COL32(255, 255, 255, 255));
-            GUIH::drawMessage(BImg::Lexend16, 16, "TEST", 0, 0);
-            GUIH::drawMessage(BImg::ShortBaby, 20, "Monkey CEO", 30, 80);
+            const char* textL[3] = { "Hi", "Hey", "Hello" };
+            drawHText(124, 760, 40, textL, 3, BImg::Lexend16, 16, 1, IM_COL32(255, 255, 255, 255), IM_COL32(0, 255, 0, 255));
+            GUIH::drawMessage(BImg::ShortBaby, 20, "Filler Point", 30, 80);
 
             GUIH::drawImage(BImg::angrymonkeytex, 30, 10, 64, 64);
 
