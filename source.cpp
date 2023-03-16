@@ -1,6 +1,10 @@
 #include "renderer.hpp"
 #include "GuiH.h"
 
+// TESTING GLOBALS
+
+int selection = 1;
+
 void drawTexts(ImDrawList* drawList, const char* texts[], int numTexts, ImVec2 position, ImU32 color) {
     ImVec2 textSize[20];
     float totalWidth = 0;
@@ -95,12 +99,26 @@ int main( )
 
             ImU32 palette[5] = { IM_COL32(15, 6, 6, 255), IM_COL32(32, 11, 11, 255), IM_COL32(47, 0, 0, 255), IM_COL32(73, 0, 0, 255), IM_COL32(101, 0, 0, 255) };
             
-            
-
-            
             //drawTexts(drawlist, texts, 5, ImVec2{ 124, 30 }, IM_COL32(255, 255, 255, 255));
-            const char* textL[3] = { "Hi", "Hey", "Hello" };
-            drawHText(124, 760, 40, textL, 3, BImg::Lexend16, 16, 1, IM_COL32(255, 255, 255, 255), IM_COL32(0, 255, 0, 255));
+            const char* textL[5] = { "Hey", "Hi", "Hello", "Hey", "Hi"};
+            ImVec2 *boundText = drawHText(124, 760, 40, textL, 5, BImg::Lexend16, 24, selection, IM_COL32(255, 255, 255, 255), IM_COL32(250, 218, 94, 255));
+            
+            if (GUIH::inBound(m_renderer->outWindow, boundText[0], boundText[1])) {
+                selection = 0;
+            }
+            if (GUIH::inBound(m_renderer->outWindow, boundText[2], boundText[3])) {
+                selection = 1;
+            }
+            if (GUIH::inBound(m_renderer->outWindow, boundText[4], boundText[5])) {
+                selection = 2;
+            }
+            if (GUIH::inBound(m_renderer->outWindow, boundText[6], boundText[7])) {
+                selection = 3;
+            }
+            if (GUIH::inBound(m_renderer->outWindow, boundText[8], boundText[9])) {
+                selection = 4;
+            }
+
             GUIH::drawMessage(BImg::ShortBaby, 20, "Filler Point", 30, 80);
 
             GUIH::drawImage(BImg::angrymonkeytex, 30, 10, 64, 64);

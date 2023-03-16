@@ -125,23 +125,19 @@ namespace GUIH {
         return ImGui::GetFont()->CalcTextSizeA(ImGui::GetFontSize(), FLT_MAX, -1.0f, text);
     }
 
-    bool inBound(HWND hwnd, int x, int y, int w, int h) {
+    bool inBound(HWND hwnd, ImVec2 topLeft, ImVec2 botRight) {
         ImVec2 menuPos = ImGui::GetWindowPos();
-        
-        // Get the cursor position in client coordinates
+
         POINT cp;
         GetCursorPos(&cp);
         ScreenToClient(hwnd, &cp);
         cp.x -= menuPos.x;
         cp.y -= menuPos.y;
 
-        // Output the cursor position to the debug console for testing purposes
-        /*
-        std::string str = (std::to_string(cp.x - menuPos.x) + " " + std::to_string(cp.y - menuPos.y) + "\n");
-        std::wstring temp = std::wstring(str.begin(), str.end());
-        OutputDebugStringW(temp.c_str());
-        */
-        
-        return (cp.x > x && cp.x < x + w && cp.y > y && cp.y < y + h);
+        return (cp.x > topLeft.x && cp.x < botRight.x && cp.y > topLeft.y && cp.y < botRight.y);
+    }
+
+    bool inBound(HWND hwnd, int x, int y, int w, int h) {
+        return inBound(hwnd, ImVec2(x, y), ImVec2(x + w, y + h));
     }
 }
