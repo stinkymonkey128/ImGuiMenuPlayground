@@ -3,8 +3,13 @@
 
 // TESTING GLOBALS
 
-int mSelection = 0;
-int s1Selection = 0;
+int selection[] = { 0, 0, 0, 0, 0, 0 };
+
+const char* aimMenu[8] = { "Rage" , "Legit" };
+const char* visMenu[8] = { "ESP", "Chams", "World", "Me" };
+const char* skinMenu[8] = { "Guns", "Knife", "Gloves" };
+const char* miscMenu[8] = { "Movement", "General"};
+const char* saveMenu[8] = { "Config", "Skinsaver" ,"Colors" };
 
 void drawTexts(ImDrawList* drawList, const char* texts[], int numTexts, ImVec2 position, ImU32 color) {
     ImVec2 textSize[20];
@@ -61,24 +66,71 @@ int main( )
 
             LPDIRECT3DTEXTURE9 icons[] = { BImg::targetIcon, BImg::targetIcon, BImg::targetIcon, BImg::targetIcon, BImg::targetIcon };
 
-            const char* texts[20] = { "Hey", "Hi", "Hello", "Hey", "Hi", "Hello" };
             
-            switch (GUIH::drawVNavBar(m_renderer->outWindow, 20, 40, 540, icons, 5, ImVec2(32, 32), ImVec2(38, 38), mSelection)) {
+            
+            switch (GUIH::drawVNavBar(m_renderer->outWindow, 20, 100, 540, icons, 5, ImVec2(32, 32), ImVec2(38, 38), selection[0])) {
             case 0:
-                GUIH::drawHSubBar(m_renderer->outWindow, 90, 750, 40, texts, 6, s1Selection, BImg::Lexend16, 24);
+                GUIH::drawMessage(BImg::ShortBaby, 24, "Aim", 90, 16);
+                switch (GUIH::drawHBarFSep(m_renderer->outWindow, 456, 16, 50, aimMenu, 2, selection[1], BImg::Lexend16, 20)) {
+                case 0:
+                    break;
+                case 1:
+                    break;
+                }
                 break;
             case 1:
+                GUIH::drawMessage(BImg::ShortBaby, 24, "Visuals", 90, 16);
+                switch (GUIH::drawHBarFSep(m_renderer->outWindow, 456, 16, 50, visMenu, 4, selection[2], BImg::Lexend16, 20)) {
+                case 0:
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+                }
                 break;
             case 2:
+                GUIH::drawMessage(BImg::ShortBaby, 24, "Skin Changer", 90, 16);
+                switch (GUIH::drawHBarFSep(m_renderer->outWindow, 456, 16, 50, skinMenu, 3, selection[3], BImg::Lexend16, 20)) {
+                case 0:
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    break;
+                }
                 break;
             case 3:
+                GUIH::drawMessage(BImg::ShortBaby, 24, "Miscellaneous", 90, 16);
+                switch (GUIH::drawHBarFSep(m_renderer->outWindow, 456, 16, 50, miscMenu, 2, selection[4], BImg::Lexend16, 20)) {
+                case 0:
+                    break;
+                case 1:
+                    break;
+                }
                 break;
             case 4:
+                GUIH::drawMessage(BImg::ShortBaby, 24, "Saves", 90, 16);
+                switch (GUIH::drawHBarFSep(m_renderer->outWindow, 456, 16, 50, skinMenu, 3, selection[5], BImg::Lexend16, 20)) {
+                case 0:
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    break;
+                }
                 break;
             }
 
+            GUIH::drawRect(97, 75, 683, 505, 6, CScheme::MAIN_CONT_BG);
+
             GUIH::drawRect(10, 4, 63, 596, 0, CScheme::MAIN_NAVBAR_BG);
             GUIH::drawRect(0, 4, 73, 596, 6, CScheme::MAIN_NAVBAR_BG);
+
+            GUIH::drawGradient(73, 51, 726, 2, IM_COL32(236, 65, 45, 255), IM_COL32(103, 58, 183, 255), IM_COL32(236, 65, 45, 255), IM_COL32(103, 58, 183, 255));
+            //GUIH::drawRect(73, 51, 726, 2, 0, CScheme::UNI_BORDER);
 
             //GUIH::drawImage(BImg::angrymonkeytex, 30, 10, 64, 64);
 

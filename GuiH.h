@@ -268,11 +268,13 @@ namespace GUIH {
 
         for (int i = 0; i < num; i++) {
             ImU32 col = CScheme::SUB_NAVBAR_OFF;
-            if (selec == i)
+            if (selec == i) {
                 col = CScheme::SUB_NAVBAR_ON;
+                drawRect(pos.x, y + textWid[i].y * 2, textWid[i].x * 3/2, 3, 7, CScheme::SUB_NAVBAR_ON);
+            }
 
             if (inBound(hwnd, pos, ImVec2(pos.x + textWid[i].x * 3/2, pos.y + textWid[i].y)))
-                if (GetAsyncKeyState(VK_LBUTTON))
+                if (GetAsyncKeyState(VK_LBUTTON)) 
                     selec = i;
                 else
                     col = CScheme::SUB_NAVBAR_HIGHLIGHT;
@@ -280,6 +282,38 @@ namespace GUIH {
             drawMessage(font, fSize, texts[i], pos.x, pos.y, col);
 
             pos.x += textWid[i].x + sepa;
+        }
+
+        return selec;
+    }
+
+    int drawHBarFSep(HWND& hwnd, int midX, int y, int forceSep, const char* texts[], int num, int& selec, ImFont* font, int fSize) {
+        ImVec2 textWid[32];
+        int totalWidth = 0;
+
+        for (int i = 0; i < num; i++) {
+            textWid[i] = ImGui::CalcTextSize(texts[i]);
+            totalWidth += textWid[i].x;
+        }
+
+        ImVec2 pos(midX - totalWidth / 2 - forceSep * num / 2, y);
+
+        for (int i = 0; i < num; i++) {
+            ImU32 col = CScheme::SUB_NAVBAR_OFF;
+            if (selec == i) {
+                col = CScheme::SUB_NAVBAR_ON;
+                drawRect(pos.x, y + textWid[i].y * 2, textWid[i].x * 3 / 2, 3, 7, CScheme::SUB_NAVBAR_ON);
+            }
+
+            if (inBound(hwnd, pos, ImVec2(pos.x + textWid[i].x * 3 / 2, pos.y + textWid[i].y)))
+                if (GetAsyncKeyState(VK_LBUTTON))
+                    selec = i;
+                else
+                    col = CScheme::SUB_NAVBAR_HIGHLIGHT;
+
+            drawMessage(font, fSize, texts[i], pos.x, pos.y, col);
+
+            pos.x += textWid[i].x + forceSep;
         }
 
         return selec;
