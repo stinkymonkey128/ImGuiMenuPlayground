@@ -4,6 +4,7 @@
 // TESTING GLOBALS
 
 int mSelection = 0;
+int s1Selection = 0;
 
 void drawTexts(ImDrawList* drawList, const char* texts[], int numTexts, ImVec2 position, ImU32 color) {
     ImVec2 textSize[20];
@@ -59,11 +60,25 @@ int main( )
             // ^^ NO TOUCHY
 
             LPDIRECT3DTEXTURE9 icons[] = { BImg::targetIcon, BImg::targetIcon, BImg::targetIcon, BImg::targetIcon, BImg::targetIcon };
-            
-            GUIH::drawVNavBar(m_renderer->outWindow, 4, 40, 540, icons, 5, ImVec2(32, 32), ImVec2(38, 38), mSelection);
 
-            GUIH::drawRect(10, 4, 74, 596, 0, CScheme::MAIN_NAVBAR_BG);
-            GUIH::drawRect(0, 4, 84, 596, 6, CScheme::MAIN_NAVBAR_BG);
+            const char* texts[20] = { "Hey", "Hi", "Hello", "Hey", "Hi", "Hello" };
+            
+            switch (GUIH::drawVNavBar(m_renderer->outWindow, 20, 40, 540, icons, 5, ImVec2(32, 32), ImVec2(38, 38), mSelection)) {
+            case 0:
+                GUIH::drawHSubBar(m_renderer->outWindow, 90, 750, 40, texts, 6, s1Selection, BImg::Lexend16, 24);
+                break;
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            }
+
+            GUIH::drawRect(10, 4, 63, 596, 0, CScheme::MAIN_NAVBAR_BG);
+            GUIH::drawRect(0, 4, 73, 596, 6, CScheme::MAIN_NAVBAR_BG);
 
             //GUIH::drawImage(BImg::angrymonkeytex, 30, 10, 64, 64);
 

@@ -227,7 +227,7 @@ namespace GUIH {
         return textBounds;
     }
 
-    void drawVNavBar(HWND hwnd, int x, int minY, int maxY, LPDIRECT3DTEXTURE9 icons[], int num, ImVec2 iconSize, ImVec2 highlightSize, int& selec) {
+    int drawVNavBar(HWND& hwnd, int x, int minY, int maxY, LPDIRECT3DTEXTURE9 icons[], int num, ImVec2 iconSize, ImVec2 highlightSize, int& selec) {
         ImVec2 pos = ImVec2(x, minY);
         float sepa = (maxY - minY - iconSize.y * num) / (num - 1);
 
@@ -236,19 +236,52 @@ namespace GUIH {
             if (selec == i)
                 col = CScheme::MAIN_NAVBAR_ON;
 
-            if (inBound(hwnd, pos, iconSize)) 
+            if (inBound(hwnd, pos, ImVec2(pos.x + iconSize.x, pos.y + iconSize.y))) 
                 if (GetAsyncKeyState(VK_LBUTTON))
                     selec = i;
                 else
-                    col = CScheme::MAIN_NAVBAR_ON;
+                    col = CScheme::MAIN_NAVBAR_HIGHLIGHT;
             
             int hDispX = (highlightSize.x - iconSize.x) / 2;
             int hDispY = (highlightSize.y - iconSize.y) / 2;
             
+            drawImage(icons[i], pos.x, pos.y, iconSize.x, iconSize.y, IM_COL32(255, 255, 255, 255));
             drawRect(pos.x - hDispX, pos.y - hDispY, highlightSize.x, highlightSize.y, 8, col);
-            drawImage(icons[i], pos.x, pos.y, iconSize.x, iconSize.y);
 
             pos.y += iconSize.y + sepa;
         }
+
+        return selec;
+    }
+
+    int drawHSubBar(HWND& hwnd, int minX, int maxX, int y, const char* texts[], int num, int& selec, ImFont* font, int fSize) {
+        ImVec2 pos(minX, y);
+        ImVec2 textWid[32];
+        int totalWidth = 0;
+
+        for (int i = 0; i < num; i++) {
+            textWid[i] = ImGui::CalcTextSize(texts[i]);
+            totalWidth += textWid[i].x;
+        }
+
+        int sepa = (maxX - minX - totalWidth) / (num - 1);
+
+        for (int i = 0; i < num; i++) {
+            ImU32 col = CScheme::SUB_NAVBAR_OFF;
+            if (selec == i)
+                col = CScheme::SUB_NAVBAR_ON;
+
+            if (inBound(hwnd, pos, ImVec2(pos.x + textWid[i].x * 3/2, pos.y + textWid[i].y)))
+                if (GetAsyncKeyState(VK_LBUTTON))
+                    selec = i;
+                else
+                    col = CScheme::SUB_NAVBAR_HIGHLIGHT;
+
+            drawMessage(font, fSize, texts[i], pos.x, pos.y, col);
+
+            pos.x += textWid[i].x + sepa;
+        }
+
+        return selec;
     }
 }
