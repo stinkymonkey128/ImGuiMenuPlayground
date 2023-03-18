@@ -33,6 +33,7 @@ namespace GUIH {
     int drawHSubBar(HWND& hwnd, int minX, int maxX, int y, const char* texts[], int num, int& selec, ImFont* font, int fSize);
     // Draw horizontal bar with force separation value
     int drawHBarFSep(HWND& hwnd, int midX, int y, int forceSep, const char* texts[], int num, int& selec, ImFont* font, int fSize);
+    bool drawCheckbox(HWND& hwnd, ImVec2 pos, ImVec2 size, int pxDif, bool& toggle, int round, ImU32 on, ImU32 off, ImU32 background, ImU32 border, ImU32 highlight);
 }
 
 #endif

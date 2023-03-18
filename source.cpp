@@ -4,31 +4,13 @@
 
 int selection[] = { 0, 0, 0, 0, 0, 0 };
 
+bool check = false;
+
 const char* aimMenu[8] = { "Rage" , "Legit" };
 const char* visMenu[8] = { "ESP", "Chams", "World", "Me" };
 const char* skinMenu[8] = { "Guns", "Knife", "Gloves" };
 const char* miscMenu[8] = { "Movement", "General"};
 const char* saveMenu[8] = { "Config", "Skinsaver" ,"Colors" };
-
-void drawTexts(ImDrawList* drawList, const char* texts[], int numTexts, ImVec2 position, ImU32 color) {
-    ImVec2 textSize[20];
-    float totalWidth = 0;
-
-    // Measure the size of each text and calculate the total width
-    for (int i = 0; i < numTexts; i++) {
-        textSize[i] = ImGui::CalcTextSize(texts[i]);
-        totalWidth += textSize[i].x;
-    }
-
-    // Calculate the horizontal spacing between texts
-    float spacing = 100;
-
-    // Draw each text with the calculated spacing
-    for (int i = 0; i < numTexts; i++) {
-        GUIH::drawMessage(BImg::Lexend16, 16, texts[i], position.x, position.y, color);
-        position.x += textSize[i].x + spacing;
-    }
-}
 
 int main( )
 {
@@ -72,6 +54,7 @@ int main( )
                 GUIH::drawMessage(BImg::ShortBaby, 24, "Aim", 90, 16);
                 switch (GUIH::drawHBarFSep(m_renderer->outWindow, 456, 16, 50, aimMenu, 2, selection[1], BImg::Lexend16, 20)) {
                 case 0:
+                    GUIH::drawCheckbox(m_renderer->outWindow, ImVec2(150, 150), ImVec2(24, 24), 2, check, 0, IM_COL32(255, 255, 255, 255), IM_COL32(62, 62, 66, 255), IM_COL32(30, 30, 30, 255), IM_COL32(62, 62, 66, 255), IM_COL32(63, 63, 70, 255));
                     break;
                 case 1:
                     break;
@@ -147,26 +130,6 @@ int main( )
         }
 
     };
-
-    /*
-    * ImU32 palette[5] = { IM_COL32(15, 6, 6, 255), IM_COL32(32, 11, 11, 255), IM_COL32(47, 0, 0, 255), IM_COL32(73, 0, 0, 255), IM_COL32(101, 0, 0, 255) };
-            
-            //drawTexts(drawlist, texts, 5, ImVec2{ 124, 30 }, IM_COL32(255, 255, 255, 255));
-            const char* textL[5] = { "Aim", "Visual", "Skins", "Misc", "Saves"};
-            //drawHText(124, 760, 80, textL, 5, BImg::Lexend16, 24, mSelection, IM_COL32(255, 255, 255, 255), IM_COL32(250, 218, 94, 255));
-            switch (drawMNav(124, 760, 40, textL, 5, BImg::Lexend16, 24, mSelection, IM_COL32(255, 255, 255, 255), IM_COL32(250, 218, 94, 255), IM_COL32(66, 70, 77, 125))) {
-            case 0:
-                break;
-            case 1:
-                break;
-            case 2:
-                break;
-            case 3:
-                break;
-            case 4:
-                break;
-            }
-    */
 
     m_renderer->on_message = [ ] ( WPARAM key )
     {

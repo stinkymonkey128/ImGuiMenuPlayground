@@ -331,3 +331,33 @@ int GUIH::drawHBarFSep(HWND& hwnd,
 
     return selec;
 }
+
+bool GUIH::drawCheckbox(HWND& hwnd, 
+    ImVec2 pos, 
+    ImVec2 size, 
+    int pxDif, 
+    bool& toggle, 
+    int round, 
+    ImU32 on, 
+    ImU32 off, 
+    ImU32 background, 
+    ImU32 border, 
+    ImU32 highlight
+) {
+    ImU32 col;
+
+    if (inBound(hwnd, pos, ImVec2(pos.x + size.x, pos.y + size.y)))
+        if (GetAsyncKeyState(VK_LBUTTON))
+            toggle = !toggle;
+        else
+            col = highlight;
+        
+
+    col = toggle ? on : off;
+
+    drawRect(pos.x + pxDif * 2, pos.y + pxDif * 2, size.x - pxDif * 4, size.y - pxDif * 4, round, col);
+    drawRect(pos.x + pxDif, pos.y + pxDif, size.x - pxDif * 2, size.y - pxDif * 2, round, background);
+    drawRect(pos.x, pos.y, size.x, size.y, round, border);
+
+    return toggle;
+}
