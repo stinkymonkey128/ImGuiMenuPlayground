@@ -34,6 +34,9 @@
     <ClCompile Include="imgui\imgui_widgets.cpp">
       <Filter>Source Files\imgui</Filter>
     </ClCompile>
+    <ClCompile Include="GuiH.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="renderer.hpp">
@@ -69,6 +72,7 @@
     <ClInclude Include="GuiH.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="include.h" />
     <ClInclude Include="colorscheme.h" />
   </ItemGroup>
 </Project>
