@@ -2,6 +2,7 @@
 #define GUIH_H
 
 #include "imgui/imgui.h"
+#include "colorscheme.h"
 
 #include <vector>
 #include <d3d9.h>
@@ -10,41 +11,21 @@
 #include <string>
 
 namespace GUIH {
-    enum ObjectType {
-        TEXT,
-        RECTANGLE,
-        IMAGE,
-        GRADIENT
-    };
+    extern enum ObjectType;
+    extern struct Object;
 
-    struct Object {
-        int x;
-        int y;
-        int w;
-        int h;
-        int r;
-        float fontSize;
-        ImU32 col;
-        const char* label;
-        ImFont* font;
-        ObjectType type;
-        ImDrawCornerFlags flags;
-        LPDIRECT3DTEXTURE9 image;
-        ImU32 topr;
-        ImU32 topl;
-        ImU32 botl;
-        ImU32 botr;
+    extern std::vector<Object> ObjectList;
 
-    };
-    std::vector<Object> ObjectList;
+    extern ImVec2 pos;
+    extern ImDrawList* gDraw;
+    extern bool NOTITLEBAR;
 
-    ImVec2 pos;
-    ImDrawList* gDraw;
-    bool NOTITLEBAR = true;
+    extern bool keyState[256];
+    extern bool prevKeyState[256];
 
-    // CODE HELL 
+    bool keyPressed(const int key);
+    bool keyDown(const int key);
 
-    // primitive draw methods
     void drawRect(int x, int y, int w, int h, int r, ImU32 color, ImDrawCornerFlags flags = 0);
     void drawMessage(ImFont* font, float fontSize, const char* text, int x, int y, ImU32 color = IM_COL32_WHITE);
     void drawGradient(int x, int y, int w, int h, ImU32 bottomL, ImU32 bottomR, ImU32 topL, ImU32 topR);
@@ -53,13 +34,13 @@ namespace GUIH {
 
     bool inBound(HWND hwnd, ImVec2 topLeft, ImVec2 botRight);
     bool inBound(HWND hwnd, int x, int y, int w, int h);
-
     ImVec2* drawHText(int minX, int maxX, int y, const char* texts[], int num, ImFont* font, int fontSize, int selec, ImU32 off, ImU32 on);
     int drawVNavBar(HWND& hwnd, int x, int minY, int maxY, LPDIRECT3DTEXTURE9 icons[], int num, ImVec2 iconSize, ImVec2 highlightSize, int& selec);
-    // Doo doo ass code dont use this piece of shit \/\/\/\/\/
     int drawHSubBar(HWND& hwnd, int minX, int maxX, int y, const char* texts[], int num, int& selec, ImFont* font, int fSize);
+    // Draw horizontal bar with force separation value
     int drawHBarFSep(HWND& hwnd, int midX, int y, int forceSep, const char* texts[], int num, int& selec, ImFont* font, int fSize);
-    bool drawCheckbox(HWND& hwnd, ImVec2 size, ImVec2 pos, bool& toggle, int borderpx, int roundness, ImU32 background, ImU32 border, ImU32 off, ImU32 on, ImU32 highlight);
+    bool drawCheckbox(HWND& hwnd, ImVec2 pos, ImVec2 size, int pxDif, bool& toggle, int round, ImU32 on, ImU32 off, ImU32 background, ImU32 border, ImU32 highlight);
+    float drawSliderF(HWND& hwnd, ImVec2 pos, ImVec2 size, int round, ImVec2 range, float &value);
 }
 
 #endif
