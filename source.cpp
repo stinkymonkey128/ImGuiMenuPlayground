@@ -4,6 +4,7 @@
 // TESTING GLOBALS
 
 int selection[] = { 0, 0, 0, 0, 0, 0 };
+bool check1 = true;
 
 const char* aimMenu[8] = { "Rage" , "Legit" };
 const char* visMenu[8] = { "ESP", "Chams", "World", "Me" };
@@ -73,6 +74,16 @@ int main( )
                 GUIH::drawMessage(BImg::ShortBaby, 24, "Aim", 90, 16);
                 switch (GUIH::drawHBarFSep(m_renderer->outWindow, 456, 16, 50, aimMenu, 2, selection[1], BImg::Lexend16, 20)) {
                 case 0:
+                    GUIH::drawCheckbox(m_renderer->outWindow,
+                        ImVec2(16, 16),
+                        ImVec2(100, 100),
+                        check1, 2, 3,
+                        CScheme::UNI_CHECK_BG,
+                        CScheme::UNI_CHECK_BORDER,
+                        CScheme::UNI_CHECK_OFF,
+                        CScheme::UNI_CHECK_ON,
+                        CScheme::UNI_CHECK_HIGHLIGHT
+                    );
                     break;
                 case 1:
                     break;
