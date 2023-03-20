@@ -17,5 +17,10 @@ namespace CScheme {
 
 	constexpr ImU32 MAIN_CONT_BG = IM_COL32(32, 11, 11, 255);
 
+	constexpr ImU32 SLIDER_BG = IM_COL32(19, 19, 19, 255);
+	constexpr ImU32 SLIDER_BORDER = IM_COL32(27, 27, 27, 255);
+	constexpr ImU32 SLIDER_HANDLE = IM_COL32(255, 255, 255, 255);
+	constexpr ImU32 SLIDER_GLOW = IM_COL32(239, 38, 115, 255);
+
 	constexpr ImU32 UNI_BORDER = IM_COL32(126, 25, 27, 255);
 }

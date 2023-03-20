@@ -20,6 +20,12 @@ namespace GUIH {
     extern ImDrawList* gDraw;
     extern bool NOTITLEBAR;
 
+    extern bool keyState[256];
+    extern bool prevKeyState[256];
+
+    bool keyPressed(const int key);
+    bool keyDown(const int key);
+
     void drawRect(int x, int y, int w, int h, int r, ImU32 color, ImDrawCornerFlags flags = 0);
     void drawMessage(ImFont* font, float fontSize, const char* text, int x, int y, ImU32 color = IM_COL32_WHITE);
     void drawGradient(int x, int y, int w, int h, ImU32 bottomL, ImU32 bottomR, ImU32 topL, ImU32 topR);
@@ -34,6 +40,7 @@ namespace GUIH {
     // Draw horizontal bar with force separation value
     int drawHBarFSep(HWND& hwnd, int midX, int y, int forceSep, const char* texts[], int num, int& selec, ImFont* font, int fSize);
     bool drawCheckbox(HWND& hwnd, ImVec2 pos, ImVec2 size, int pxDif, bool& toggle, int round, ImU32 on, ImU32 off, ImU32 background, ImU32 border, ImU32 highlight);
+    float drawSliderF(HWND& hwnd, ImVec2 pos, ImVec2 size, int round, ImVec2 range, float &value);
 }
 
 #endif

@@ -32,6 +32,17 @@ ImVec2 GUIH::pos;
 ImDrawList* GUIH::gDraw;
 bool GUIH::NOTITLEBAR = true;
 
+bool GUIH::keyState[256];
+bool GUIH::prevKeyState[256];
+
+bool GUIH::keyPressed(const int key) {
+    return keyState[key] && !prevKeyState[key];
+}
+
+bool GUIH::keyDown(const int key) {
+    return keyState[key];
+}
+
 void GUIH::drawRect(int x, 
     int y, 
     int w, 
@@ -232,7 +243,7 @@ int GUIH::drawVNavBar(HWND& hwnd,
             col = CScheme::MAIN_NAVBAR_ON;
 
         if (inBound(hwnd, pos, ImVec2(pos.x + iconSize.x, pos.y + iconSize.y)))
-            if (GetAsyncKeyState(VK_LBUTTON))
+            if (keyPressed(VK_LBUTTON))
                 selec = i;
             else
                 col = CScheme::MAIN_NAVBAR_HIGHLIGHT;
@@ -278,7 +289,7 @@ int GUIH::drawHSubBar(HWND& hwnd,
         }
 
         if (inBound(hwnd, pos, ImVec2(pos.x + textWid[i].x * 3 / 2, pos.y + textWid[i].y)))
-            if (GetAsyncKeyState(VK_LBUTTON))
+            if (keyPressed(VK_LBUTTON))
                 selec = i;
             else
                 col = CScheme::SUB_NAVBAR_HIGHLIGHT;
@@ -319,7 +330,7 @@ int GUIH::drawHBarFSep(HWND& hwnd,
         }
 
         if (inBound(hwnd, pos, ImVec2(pos.x + textWid[i].x * 3 / 2, pos.y + textWid[i].y)))
-            if (GetAsyncKeyState(VK_LBUTTON))
+            if (keyPressed(VK_LBUTTON))
                 selec = i;
             else
                 col = CScheme::SUB_NAVBAR_HIGHLIGHT;
@@ -345,19 +356,48 @@ bool GUIH::drawCheckbox(HWND& hwnd,
     ImU32 highlight
 ) {
     ImU32 col;
+    col = toggle ? on : off;
 
     if (inBound(hwnd, pos, ImVec2(pos.x + size.x, pos.y + size.y)))
-        if (GetAsyncKeyState(VK_LBUTTON))
+        if (keyPressed(VK_LBUTTON))
             toggle = !toggle;
         else
-            col = highlight;
-        
-
-    col = toggle ? on : off;
+            background = highlight;
 
     drawRect(pos.x + pxDif * 2, pos.y + pxDif * 2, size.x - pxDif * 4, size.y - pxDif * 4, round, col);
     drawRect(pos.x + pxDif, pos.y + pxDif, size.x - pxDif * 2, size.y - pxDif * 2, round, background);
     drawRect(pos.x, pos.y, size.x, size.y, round, border);
 
     return toggle;
+}
+
+float GUIH::drawSliderF(HWND& hwnd,
+    ImVec2 pos,
+    ImVec2 size,
+    int round,
+    ImVec2 range,
+    float &value
+) {
+    if (inBound(hwnd, ImVec2(pos.x, pos.y), ImVec2(pos.x + size.x, pos.y + size.y)) && keyDown(VK_LBUTTON)) {
+        ImVec2 menuPos = ImGui::GetWindowPos();
+
+        POINT cp;
+        GetCursorPos(&cp);
+        ScreenToClient(hwnd, &cp);
+        cp.x -= menuPos.x - pos.x;
+        cp.y -= menuPos.y;
+
+        value = cp.x / (size.x - 2) * (range.y - range.x);
+
+        ImGui::SetWindowPos(menuPos, ImGuiCond_Always);
+    }
+
+    int xVal = (value - range.x) * (size.x - 2) / (range.y - range.x);
+
+    drawRect(pos.x, pos.y, size.x, size.y, round, CScheme::SLIDER_BORDER);
+    drawRect(pos.x + 1, pos.y + 1, size.x - 2, size.y - 2, round, CScheme::SLIDER_BG);
+    drawRect(pos.x + 1, pos.y + 1, xVal >= 4 ? xVal - 4 : 0, size.y - 2, round, CScheme::SLIDER_GLOW);
+    drawRect(pos.x + 1, pos.y + 1, xVal, size.y - 2, round, CScheme::SLIDER_HANDLE);
+
+    return value;
 }
