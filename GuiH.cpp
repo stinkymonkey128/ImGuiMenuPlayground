@@ -378,13 +378,16 @@ float GUIH::drawSliderF(HWND& hwnd,
     ImVec2 range,
     float &value
 ) {
-    if (inBound(hwnd, ImVec2(pos.x, pos.y), ImVec2(pos.x + size.x, pos.y + size.y)) && keyDown(VK_LBUTTON)) {
+    int bigOy = pos.y - pos.y * .08;
+    int bigAy = pos.y + size.y + pos.y * .08;
+
+    if (inBound(hwnd, ImVec2(pos.x, bigOy), ImVec2(pos.x + size.x, bigAy)) && keyDown(VK_LBUTTON)) {
         ImVec2 menuPos = ImGui::GetWindowPos();
 
         POINT cp;
         GetCursorPos(&cp);
         ScreenToClient(hwnd, &cp);
-        cp.x -= menuPos.x - pos.x;
+        cp.x -= menuPos.x + pos.x;
         cp.y -= menuPos.y;
 
         value = cp.x / (size.x - 2) * (range.y - range.x);
@@ -394,10 +397,12 @@ float GUIH::drawSliderF(HWND& hwnd,
 
     int xVal = (value - range.x) * (size.x - 2) / (range.y - range.x);
 
-    drawRect(pos.x, pos.y, size.x, size.y, round, CScheme::SLIDER_BORDER);
-    drawRect(pos.x + 1, pos.y + 1, size.x - 2, size.y - 2, round, CScheme::SLIDER_BG);
+    ImGui::SetCursorPos(ImVec2(pos.x, pos.y - pos.y * .08));
+    ImGui::InvisibleButton(" ", ImVec2(size.x, size.y + pos.y * .16));
     drawRect(pos.x + 1, pos.y + 1, xVal >= 4 ? xVal - 4 : 0, size.y - 2, round, CScheme::SLIDER_GLOW);
     drawRect(pos.x + 1, pos.y + 1, xVal, size.y - 2, round, CScheme::SLIDER_HANDLE);
+    drawRect(pos.x, pos.y, size.x, size.y, round, CScheme::SLIDER_BORDER);
+    drawRect(pos.x + 1, pos.y + 1, size.x - 2, size.y - 2, round, CScheme::SLIDER_BG);
 
     return value;
 }
